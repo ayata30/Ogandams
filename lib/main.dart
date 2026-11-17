@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
-import 'screens/auth/login_screen.dart';
+import 'screens/login_screen.dart';
 
 import 'services/auth_service.dart';
-import 'screens/home/home_screen.dart';
+import 'screens/home_screen.dart';
 
 
 Future<void> main() async {
