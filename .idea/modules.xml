@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Ogandams.iml" filepath="$PROJECT_DIR$/Ogandams.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/ogandams_android.iml" filepath="$PROJECT_DIR$/android/ogandams_android.iml" />
     </modules>
   </component>
 </project>

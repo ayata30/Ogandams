@@ -79,6 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
           message = error.message ?? 'Something went wrong.';
       }
 
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(message)),
       );
