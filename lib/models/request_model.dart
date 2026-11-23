@@ -1,7 +1,11 @@
 
+/// Represents a support request submitted by a user in Ogandams
+///
+/// stores the request details, the user who submitted it,
+/// its current status, and the date it was created.
 class RequestModel {
   final String requestId;
-  final String userId; /// tells us whats user submiiited the request
+  final String userId; /// firebased tells us whats user submiiited the request
   final String title; /// title of request
   final String category; /// request category
   final String description;
