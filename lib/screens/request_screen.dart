@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import '../services/request_service.dart';
 
 class RequestScreen extends StatefulWidget {
   const RequestScreen({super.key});
@@ -14,6 +15,9 @@ class RequestScreenState extends State<RequestScreen> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _amountController = TextEditingController();
+  final RequestService _requestService = RequestService();
+
+  bool _isLoading = false;
 
   String _selectedCategory = 'Groceries';
 
@@ -34,20 +38,47 @@ class RequestScreenState extends State<RequestScreen> {
     super.dispose();
   }
 
-  void _submitRequest() {
+  /// Validates and submits a support request to Firestore
+  Future <void> _submitRequest() async {
+    /// checks wheter the form passes validation
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
+    setState(() {
+      _isLoading = true;
+    });
+
+  try {
+  // Convert the optional amount into a double
+  final amountText = _amountController.text.trim();
+
+  final amount = amountText.isEmpty
+  ? null
+  : double.parse(amountText);
+
+  // Save the request through RequestService
+  await _requestService.submitRequest(
+  title: _titleController.text.trim(),
+  category: _selectedCategory,
+  description: _descriptionController.text.trim(),
+  amount: amount,
+  );
+
+  if (!mounted) return;
+
     // For now, this only confirms the form was completed.
     // Later, we'll save the request to Firestore.
 
+/// notifies the user that the request was saved
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Request form completed!'),
+        content: Text('Your request was submitted successfully!'),
       ),
     );
 
+    /// clears the form after a succesfu submission
     _formKey.currentState!.reset();
 
     _titleController.clear();
@@ -57,7 +88,24 @@ class RequestScreenState extends State<RequestScreen> {
     setState(() {
       _selectedCategory = 'Groceries';
     });
+  } catch (error) {
+    if (!mounted) return;
+
+    // Display an error if the request could not be saved
+    ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+    content: Text('Unable to submit request: $error'),
+    ),
+    );
+
+    } finally {
+    if (mounted) {
+    setState(() {
+    _isLoading = false;
+      });
+    }
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -220,13 +268,24 @@ class RequestScreenState extends State<RequestScreen> {
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton(
-                  onPressed: _submitRequest,
+                  onPressed: _isLoading ? null : _submitRequest,
+
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF245C45),
                     foregroundColor: Colors.white,
                   ),
-                  child: const Text(
+                  child: _isLoading
+                    ? const SizedBox(
+                      height: 22,
+                      width: 22,
+                     child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
+                  )
+                  : const Text(
                     'Submit Request',
+
                     style: TextStyle(fontSize: 16),
                   ),
                 ),
